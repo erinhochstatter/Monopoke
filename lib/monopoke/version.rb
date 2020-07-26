@@ -1,3 +1,3 @@
-module Monopoke
+class Monopoke
   VERSION = "0.1.0"
 end
