@@ -96,6 +96,20 @@ RSpec.describe Monopoke do
           expect{ subject.create(team_id_3, monopoke_id_3, hp_3, ap_3) }.to raise_error("There are already two teams, let's Battle!")
         end
       end
+
+      context "when a monster exists with the same name" do
+        before do
+          subject.create(team_id, monopoke_id, hp, ap)
+          subject.create(team_id_2, monopoke_id, hp_2, ap_2)
+        end
+
+        it "appends a plus to the name" do
+          monsters = subject.battle.teams.map { |team| team[:monsters] }
+          monopoke_names = monsters.flatten.map { |mon| mon[:name] }
+
+          expect(monopoke_names).to match_array([monopoke_id, "#{monopoke_id} +"])
+        end
+      end
     end
 
     context 'when an argument is missing or invalid' do

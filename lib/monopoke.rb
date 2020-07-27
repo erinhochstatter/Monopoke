@@ -13,8 +13,11 @@ class Monopoke
 
   def create (team_id, monopoke_id, health_points, attack_points)
     team = battle.find_or_create_team(team_id)
-    team.add_monster(monopoke_id, health_points, attack_points)
+    # TODO: Warn of changed name
+    monster_name = battle.unique_monster_id?(monopoke_id) ? monopoke_id : "#{monopoke_id} +"
+    team.add_monster(monster_name, health_points, attack_points)
   end
+
 
   class << self
     def create (team_id, monopoke_id, health_points, attack_points)
