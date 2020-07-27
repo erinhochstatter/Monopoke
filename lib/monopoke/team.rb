@@ -15,5 +15,13 @@ class Monopoke
 
       existing_monster || raise(ArgumentError, "Hmm, it doesn't look like that Monopoké is on your team.  Try again.")
     end
+
+    def chosen_monster
+      monsters.select { |monster| monster.chosen == true }.first
+    end
+
+    def available_monsters
+      monsters.select { |monster| monster.available == true } || []
+    end
   end
 end

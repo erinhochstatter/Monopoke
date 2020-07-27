@@ -11,5 +11,19 @@ class Monopoke
       super
       self.chosen = false
     end
+
+    def defeated?
+      hp <= 0
+    end
+
+    def take_hit(ap)
+      self.hp -= ap
+    end
+
+    def available
+      return false if defeated?
+      return false if chosen == true
+      return true
+    end
   end
 end

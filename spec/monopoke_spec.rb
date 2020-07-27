@@ -181,4 +181,53 @@ RSpec.describe Monopoke do
     end
   end
 
+  describe "attack" do
+    before do
+      subject.create(team_id, monopoke_id, hp, ap)
+      subject.create(team_id_2, monopoke_id_2, hp_2, ap_2)
+      subject.i_choose_you(monopoke_id)
+      subject.i_choose_you(monopoke_id_2)
+    end
+
+    context "when called on the chosen monster" do
+      let(:target) { subject.battle.all_monsters.select { |monster| monster.name == monopoke_id_2 }.first }
+      let(:first_team) { subject.battle.teams.first }
+      let(:second_team) { subject.battle.teams.last }
+
+      it "subtracts its ap value from the opposing monster's health" do
+        expect{ subject.attack }.to change(target, :hp).from(hp_2).to(hp_2 - ap)
+      end
+
+      describe "after the damage calculated" do
+        context "when the opposing player has > 0 hp" do
+          it "sets the next turn to the other team" do
+            target.hp = 10
+            expect(subject.battle.active).to eq(true)
+            expect{ subject.attack }.to change(subject.battle, :active_team).from(first_team).to(second_team)
+          end
+        end
+
+        context "when the opposing player has <= 0 hp" do
+          before do
+            target.hp = 1
+          end
+
+          it "the monster is defeated" do
+            expect{ subject.attack }.to change(target, :defeated?).from(false).to(true)
+          end
+
+          it "ends the game if no additional monsters are available" do
+            expect{ subject.attack }.to change(subject.battle, :active).from(true).to(false)
+          end
+
+          it "requires the opposing player to select a new monster, if possible" do
+
+            subject.create(team_id_2, monopoke_id_2, hp_2, ap_2)
+            expect{ subject.attack }.to change(subject.battle, :active_team).from(first_team).to(second_team)
+            expect{ subject.attack }.to change(subject.battle, :active_team).from(second_team).to(first_team)
+          end
+        end
+      end
+    end
+  end
 end

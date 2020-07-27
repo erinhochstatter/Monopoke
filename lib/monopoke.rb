@@ -13,13 +13,22 @@ class Monopoke
 
   def create (team_id, monopoke_id, health_points, attack_points)
     team = battle.find_or_create_team(team_id)
-    # TODO: Warn of changed name
-    monster_name = battle.unique_monster_id?(monopoke_id) ? monopoke_id : "#{monopoke_id} +"
+    monster_name = monopoke_id
+
+    if !battle.unique_monster_id?(monopoke_id)
+      monster_name = "#{monopoke_id} +"
+      puts "#{monopoke_id} was taken, so your monopoké is named: #{monster_name}"
+    end
+
     team.add_monster(monster_name, health_points, attack_points)
   end
 
   def i_choose_you(monopoke_id)
     battle.choose_monster(monopoke_id)
+  end
+
+  def attack
+    battle.attack
   end
 
   class << self
