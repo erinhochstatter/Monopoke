@@ -1,18 +1,18 @@
 RSpec.describe Monopoke do
-  describe 'create' do
-    let(:team_id) { "Rocket" }
-    let(:team_id_2) { "Green" }
-    let(:team_id_3) { "Orange" }
-    let(:monopoke_id) { "Meekachu" }
-    let(:monopoke_id_2) { "Rastly" }
-    let(:monopoke_id_3) { "Flirtle" }
-    let(:hp) { 3 }
-    let(:ap) { 1 }
-    let(:hp_2) { 5 }
-    let(:ap_2) { 6 }
-    let(:hp_3) { 4 }
-    let(:ap_3) { 3 }
+  let(:team_id) { "Rocket" }
+  let(:team_id_2) { "Green" }
+  let(:team_id_3) { "Orange" }
+  let(:monopoke_id) { "Meekachu" }
+  let(:monopoke_id_2) { "Rastly" }
+  let(:monopoke_id_3) { "Flirtle" }
+  let(:hp) { 3 }
+  let(:ap) { 1 }
+  let(:hp_2) { 5 }
+  let(:ap_2) { 6 }
+  let(:hp_3) { 4 }
+  let(:ap_3) { 3 }
 
+  describe 'create' do
     context 'when all arguments are present and valid' do
       context 'when no team exists with the given team id' do
         before do
@@ -138,4 +138,47 @@ RSpec.describe Monopoke do
       end
     end
   end
+
+  describe 'i_choose_you' do
+    context "without both teams" do
+      before do
+        subject.create(team_id, monopoke_id, hp, ap)
+      end
+      it "throws an error" do
+        expect{ subject.i_choose_you(monopoke_id) }.to raise_error("Please add another team before choosing your Monpoké.")
+      end
+    end
+
+    context "when both teams are present" do
+      before do
+        subject.create(team_id, monopoke_id, hp, ap)
+        subject.create(team_id_2, monopoke_id_2, hp_2, ap_2)
+      end
+
+      context "when player one chooses first" do
+        before do
+          subject.i_choose_you(monopoke_id)
+        end
+
+        it "chooses the monster" do
+          first_monster = subject.battle.teams.first.monsters.first
+
+          expect(first_monster.chosen).to eq(true)
+        end
+
+        it "starts the battle" do
+          expect(subject.battle.active).to eq(true)
+        end
+      end
+
+      context "when player two chooses first" do
+        # Note: I might refactor the input to take a team id argument on this command.
+
+        it "throws an error" do
+          expect{ subject.i_choose_you(monopoke_id_2) }.to raise_error(ArgumentError)
+        end
+      end
+    end
+  end
+
 end

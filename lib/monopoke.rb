@@ -18,6 +18,9 @@ class Monopoke
     team.add_monster(monster_name, health_points, attack_points)
   end
 
+  def i_choose_you(monopoke_id)
+    battle.choose_monster(monopoke_id)
+  end
 
   class << self
     def create (team_id, monopoke_id, health_points, attack_points)
