@@ -5,16 +5,18 @@ class Monopoke
       self.active = false
     end
 
-    def find_or_create_team(team_id)
-      existing_team = teams.select { |team| team.name == team_id }.first
+    def create (team_id, monopoke_id, health_points, attack_points)
+      hp = health_points.to_i if health_points
+      ap = attack_points.to_i if attack_points
 
-      if existing_team
-        existing_team
-      elsif teams.count >= 2
-        raise ArgumentError, "There are already two teams, let's Battle!"
-      else
-        new_team(team_id)
+      team = find_or_create_team(team_id)
+      monster_name = monopoke_id
+
+      if !unique_monster_id?(monopoke_id)
+        monster_name = "#{monopoke_id} +"
+        Monopoke.handle_output("#{monopoke_id} was taken, so your monopoké is named: #{monster_name}")
       end
+      team.add_monster(monster_name, hp, ap)
     end
 
     def new_team(team_id)
@@ -31,17 +33,49 @@ class Monopoke
       if attack_monster
         handle_damage(target_monster, attack_monster)
       else
-        puts "Choose a new Monopoké"
+        throw
       end
 
       update_current_turn
     end
 
+    def ichooseyou(monster_id)
+      if teams.count < 2
+        exit(1)
+      end
+
+      monster = active_team.choose_monster(monster_id)
+      Monopoke.handle_output("#{monster.name} has entered the battle!")
+
+      self.active = true
+      update_current_turn
+    end
+
+    def finish_game
+      self.active = false
+      Monopoke.handle_output("Team #{active_team.name} wins!")
+      exit(true)
+    end
+
+    # helper methods
+    def find_or_create_team(team_id)
+      existing_team = teams.select { |team| team.name == team_id }.first
+
+      if existing_team
+        existing_team
+      elsif teams.count >= 2
+        exit(false)
+      else
+        new_team(team_id)
+      end
+    end
+
     def handle_damage(target_monster, attack_monster)
       attack_points = attack_monster.ap
       target_monster.take_hit(attack_points)
-      target_monster.chosen = false if target_monster.defeated?
+      Monopoke.handle_output("#{attack_monster.name} attacked #{target_monster.name} for #{attack_points} damage!")
 
+      target_monster.defeat! if target_monster.defeated?
       finish_game if target_monster.defeated? && other_team.available_monsters.count.zero?
     end
 
@@ -55,15 +89,6 @@ class Monopoke
       end
     end
 
-    def choose_monster(monster_id)
-      raise StandardError, "Please add another team before choosing your Monpoké." if teams.count < 2
-
-      monster = active_team.find_monster(monster_id)
-      monster.chosen = true
-      self.active = true #TODO: Is there a way to not call this every time?
-      update_current_turn
-    end
-
     def all_monsters
       teams.flat_map(&:monsters)
     end
@@ -74,10 +99,6 @@ class Monopoke
 
     def other_team
       active_team == teams.first ? teams.last : teams.first
-    end
-
-    def finish_game
-      self.active = false
     end
   end
 end

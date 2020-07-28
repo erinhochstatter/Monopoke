@@ -3,37 +3,52 @@ require "monopoke/battle"
 require "monopoke/monster"
 require "monopoke/team"
 require "monopoke/version"
+require "monopoke/input"
+require "pry"
 
 class Monopoke
-  attr_accessor :battle
+  attr_accessor :battle, :input, :output
 
-  def initialize
+  def initialize(string)
+    self.input = Input.new(string)
     self.battle = Battle.new(teams: [])
+    self.output = create_output_file(string)
   end
 
-  def create (team_id, monopoke_id, health_points, attack_points)
-    team = battle.find_or_create_team(team_id)
-    monster_name = monopoke_id
-
-    if !battle.unique_monster_id?(monopoke_id)
-      monster_name = "#{monopoke_id} +"
-      puts "#{monopoke_id} was taken, so your monopoké is named: #{monster_name}"
+  def start_battle
+    input.instructions.each do |instruction|
+      command, *args = instruction
+      battle.send(command.downcase, *args)
     end
-
-    team.add_monster(monster_name, health_points, attack_points)
   end
 
-  def i_choose_you(monopoke_id)
-    battle.choose_monster(monopoke_id)
+  def create_output_file(string)
+    file_path = path_without_input_name(string)
+    file_name = "BattleResults_#{Time.now.strftime("%-d%H%M727_%H%M00")}.txt"
+    File.new("#{file_path}/#{file_name}", "w+")
   end
 
-  def attack
-    battle.attack
+  def path_without_input_name(string)
+    file_path_elements = string.split("/")
+    file_path_elements.pop
+    file_path_elements.join("/")
+  end
+
+  def handle_output(message)
+    puts message
+    self.output.write("#{message}\n")
   end
 
   class << self
-    def create (team_id, monopoke_id, health_points, attack_points)
-      new.create(team_id, monopoke_id, health_points, attack_points)
+    attr_accessor :instance
+
+    def handle_output(message)
+      instance.handle_output(message)
+    end
+
+    def start_battle(string)
+      self.instance = new(string)
+      instance.start_battle
     end
   end
 end

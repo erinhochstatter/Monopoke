@@ -1,12 +1,11 @@
-require "active_support"
 
 class Monopoke
   Monster = Struct.new(:name, :hp, :ap, :chosen, keyword_init: true) do
 
-    def initialize(*args)
-      raise ArgumentError, "Incorrect arguments" unless !!args[0][:name] && !!args[0][:hp] && !!args[0][:ap]
-      raise ArgumentError, "Incorrect arguments: HP must be more than 1" if (args[0][:hp] < 1)
-      raise ArgumentError, "Incorrect arguments: AP must be more than 1" if (args[0][:ap] < 1)
+    def initialize(name:, hp:, ap:, **args)
+      raise exit(false) unless !!name && !!hp && !!ap
+      raise exit(false) if (hp < 1)
+      raise exit(false) if (ap < 1)
 
       super
       self.chosen = false
@@ -16,11 +15,16 @@ class Monopoke
       hp <= 0
     end
 
+    def defeat!
+      self.chosen = false
+      Monopoke.handle_output("#{name} has been defeated!")
+    end
+
     def take_hit(ap)
       self.hp -= ap
     end
 
-    def available
+    def available?
       return false if defeated?
       return false if chosen == true
       return true
