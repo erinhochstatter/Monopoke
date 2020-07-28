@@ -7,12 +7,13 @@ After cloning the repository, you can run the following in your terminal to inst
 
 ```ruby
 bundle install
-gem build monopoke
-gem install --local monopoke
+gem build monopoke.gemspec
 ```
 
+Then outside of the project folder, you can install the gem with `gem install --local monopoke`
+
 ## Usage
-To start a game, simply type `monopoke`  followed by the path to your input file.  The sample input is saved as part of the project, under `spec/support` if you need sample data at the ready.
+To start a game, simply type `monopoke`  followed by the path to your input file.  The sample input is saved as part of the project, under `spec/support` if you need sample data at the ready (i.e. `monopoke monopoke/spec/support/sample_input.txt`).
 
 The game's output will print to the console, as well as to an output file (with a datestamp), which will be placed in the same path as the input file.
 
