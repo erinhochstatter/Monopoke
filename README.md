@@ -1,35 +1,25 @@
 # Monopoke
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/monopoke`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Welcome to Monopoké, a Ruby CLI turn-based game.  Yep, I just committed to the extra 'o' 😀
 
 ## Installation
-
-Add this line to your application's Gemfile:
+After cloning the repository, you can run the following in your terminal to install the CLI tool:
 
 ```ruby
-gem 'monopoke'
+bundle install
+gem build monopoke
+gem install --local monopoke
 ```
 
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install monopoke
-
 ## Usage
+To start a game, simply type `monopoke`  followed by the path to your input file.  The sample input is saved as part of the project, under `spec/support` if you need sample data at the ready.
 
-TODO: Write usage instructions here
+The game's output will print to the console, as well as to an output file (with a datestamp), which will be placed in the same path as the input file.
 
-## Development
+## Tests
+To run the test suite, you can run `bundle exec rspec spec`
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/monopoke.
+## Improvements
+- Refactor the tests that were moved over from the original structure.
+- Make it a truly turn based CLI (invovles adding a database to track the gameplay)
+- Add a more playful UI for the selections, using something like [Shopify's CLI UI](https://github.com/Shopify/cli-ui)
