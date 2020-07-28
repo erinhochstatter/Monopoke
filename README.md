@@ -21,5 +21,5 @@ To run the test suite, you can run `bundle exec rspec spec`
 
 ## Improvements
 - Refactor the tests that were moved over from the original structure.
-- Make it a truly turn based CLI (invovles adding a database to track the gameplay)
+- Make it a truly turn based CLI (involves adding a database to track the gameplay)
 - Add a more playful UI for the selections, using something like [Shopify's CLI UI](https://github.com/Shopify/cli-ui)
