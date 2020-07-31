@@ -1,3 +1,4 @@
+
 RSpec.describe Monopoke::Battle do
   let(:team_id) { "Rocket" }
   let(:team_id_2) { "Green" }
@@ -92,7 +93,7 @@ RSpec.describe Monopoke::Battle do
         end
 
         it "throws an error" do
-          expect{ subject.create(team_id_3, monopoke_id_3, hp_3, ap_3) }.to raise_error(SystemExit)
+          expect{ subject.create(team_id_3, monopoke_id_3, hp_3, ap_3) }.to exit_with_code(1)
         end
       end
 
@@ -113,27 +114,27 @@ RSpec.describe Monopoke::Battle do
 
     context 'when an argument is missing or invalid' do
       it 'generates error output when team_id is missing' do
-        expect{ subject.create(nil, monopoke_id_3, hp_3, ap_3) }.to raise_error(SystemExit)
+        expect{ subject.create(nil, monopoke_id_3, hp_3, ap_3) }.to exit_with_code(1)
       end
 
       it 'generates error output when monopoké_id is missing' do
-        expect{ subject.create(team_id_3, nil, hp_3, ap_3) }.to raise_error(SystemExit)
+        expect{ subject.create(team_id_3, nil, hp_3, ap_3) }.to exit_with_code(1)
       end
 
       it 'generates error output when hp is missing' do
-        expect{ subject.create(team_id_3, monopoke_id_3, nil, ap_3) }.to raise_error(SystemExit)
+        expect{ subject.create(team_id_3, monopoke_id_3, nil, ap_3) }.to exit_with_code(1)
       end
 
       it 'generates error output when ap is missing' do
-        expect{ subject.create(team_id_3, monopoke_id_3, hp_3, nil) }.to raise_error(SystemExit)
+        expect{ subject.create(team_id_3, monopoke_id_3, hp_3, nil) }.to exit_with_code(1)
       end
 
       it 'generates an error if hp is < 1' do
-        expect{ subject.create(team_id_3, monopoke_id_3, 0, ap_3) }.to raise_error(SystemExit)
+        expect{ subject.create(team_id_3, monopoke_id_3, 0, ap_3) }.to exit_with_code(1)
       end
 
       it 'generates an error if ap is < 1' do
-        expect{ subject.create(team_id_3, monopoke_id_3, hp_3, -2) }.to raise_error(SystemExit)
+        expect{ subject.create(team_id_3, monopoke_id_3, hp_3, -2) }.to exit_with_code(1)
       end
     end
   end
@@ -144,7 +145,7 @@ RSpec.describe Monopoke::Battle do
         subject.create(team_id, monopoke_id, hp, ap)
       end
       it "throws an error" do
-        expect{ subject.ichooseyou(monopoke_id) }.to raise_error(SystemExit)
+        expect{ subject.ichooseyou(monopoke_id) }.to exit_with_code(1)
       end
     end
 
@@ -174,7 +175,7 @@ RSpec.describe Monopoke::Battle do
         # Note: I might refactor the input to take a team id argument on this command.
 
         it "throws an error" do
-          expect{ subject.ichooseyou(monopoke_id_2) }.to raise_error(SystemExit)
+          expect{ subject.ichooseyou(monopoke_id_2) }.to exit_with_code(1)
         end
       end
     end
@@ -212,18 +213,22 @@ RSpec.describe Monopoke::Battle do
           end
 
           it "the monster is defeated" do
-            expect{ subject.attack }.to change(target, :defeated?).from(false).to(true)
+            expect(target).to_not be_defeated
+            expect{ subject.attack }.to exit_with_code(0)
+            expect(target).to be_defeated
           end
 
           it "ends the game if no additional monsters are available" do
-            expect{ subject.attack }.to change(subject, :active).from(true).to(false)
+            expect(subject.active).to be(true)
+            expect{ subject.attack }.to exit_with_code(0)
+            expect(subject.active).to be(false)
           end
 
-          it "requires the opposing player to select a new monster, if possible" do
-
+          it "throws an error (the player needs to select a new monster)" do
             subject.create(team_id_2, monopoke_id_2, hp_2, ap_2)
             expect{ subject.attack }.to change(subject, :active_team).from(first_team).to(second_team)
-            expect{ subject.attack }.to change(subject, :active_team).from(second_team).to(first_team)
+
+            expect{ subject.attack }.to exit_with_code(1)
           end
         end
       end
@@ -237,12 +242,14 @@ RSpec.describe Monopoke::Battle do
       subject.ichooseyou(monopoke_id)
     end
 
-    it "sets the current battle to inactive" do
-      expect{subject.finish_game}.to change(subject, :active).from(true).to(false)
+   it "sets the current battle to inactive" do
+      expect(subject.active).to be(true)
+      expect{ subject.finish_game }.to exit_with_code(0)
+      expect(subject.active).to be(false)
     end
 
     it "exits the app" do
-      expect{subject.finish_game}.to raise_error(SystemExit:true)
+      expect{subject.finish_game}.to exit_with_code(0)
     end
   end
 end

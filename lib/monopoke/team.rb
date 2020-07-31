@@ -2,7 +2,7 @@ class Monopoke
   Team = Struct.new(:name, :monsters, keyword_init: true) do
 
     def initialize(*args)
-      exit(false) unless !!args[0][:name]
+      exit(1) unless !!args[0][:name]
       super
     end
 
@@ -13,8 +13,7 @@ class Monopoke
 
     def find_monster(monster_id)
       existing_monster = monsters.select { |monster| monster.name == monster_id }.first
-
-      existing_monster || exit(false)
+      existing_monster || exit(1)
     end
 
     def choose_monster(monster_id)

@@ -33,7 +33,7 @@ class Monopoke
       if attack_monster
         handle_damage(target_monster, attack_monster)
       else
-        throw
+        exit(1)
       end
 
       update_current_turn
@@ -54,7 +54,7 @@ class Monopoke
     def finish_game
       self.active = false
       Monopoke.handle_output("Team #{active_team.name} wins!")
-      exit(true)
+      exit(0)
     end
 
     # helper methods
@@ -64,7 +64,7 @@ class Monopoke
       if existing_team
         existing_team
       elsif teams.count >= 2
-        exit(false)
+        exit(1)
       else
         new_team(team_id)
       end

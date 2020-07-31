@@ -3,9 +3,9 @@ class Monopoke
   Monster = Struct.new(:name, :hp, :ap, :chosen, keyword_init: true) do
 
     def initialize(name:, hp:, ap:, **args)
-      raise exit(false) unless !!name && !!hp && !!ap
-      raise exit(false) if (hp < 1)
-      raise exit(false) if (ap < 1)
+      raise exit(1) unless !!name && !!hp && !!ap
+      raise exit(1) if (hp < 1)
+      raise exit(1) if (ap < 1)
 
       super
       self.chosen = false

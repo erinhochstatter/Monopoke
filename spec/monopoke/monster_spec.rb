@@ -39,6 +39,5 @@ RSpec.describe Monopoke::Monster do
     it "returns true otherwise" do
       expect(subject.available?).to eq(true)
     end
-
   end
 end
