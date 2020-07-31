@@ -24,7 +24,7 @@ class Monopoke
 
   def create_output_file(string)
     file_path = path_without_input_name(string)
-    file_name = "BattleResults_#{Time.now.strftime("%-d%H%M727_%H%M00")}.txt"
+    file_name = "BattleResults_#{Time.now.strftime("%-d%H%M_%H%M00")}.txt"
     File.new("#{file_path}/#{file_name}", "w+")
   end
 

@@ -1,5 +1,5 @@
- #!/usr/bin/env ruby
+#!/usr/bin/env ruby
 
- require "monopoke/cli"
+require "monopoke/cli"
 
- Monopoke::CLI.start(ARGV)
+Monopoke::CLI.start(ARGV)
