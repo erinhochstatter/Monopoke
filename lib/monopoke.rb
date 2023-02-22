@@ -1,10 +1,10 @@
-require "active_support"
-require "monopoke/battle"
-require "monopoke/monster"
-require "monopoke/team"
-require "monopoke/version"
-require "monopoke/input"
-require "pry"
+require 'active_support'
+require 'monopoke/battle'
+require 'monopoke/monster'
+require 'monopoke/team'
+require 'monopoke/version'
+require 'monopoke/input'
+require 'pry'
 
 class Monopoke
   attr_accessor :battle, :input, :output
@@ -24,19 +24,20 @@ class Monopoke
 
   def create_output_file(string)
     file_path = path_without_input_name(string)
-    file_name = "BattleResults_#{Time.now.strftime("%-d%H%M_%H%M00")}.txt"
-    File.new("#{file_path}/#{file_name}", "w+")
+    file_name = "BattleResults_#{Time.now.strftime('%-d%H%M_%H%M00')}.txt"
+    File.new("#{file_path}/#{file_name}", 'w+')
   end
 
+  # helpers
   def path_without_input_name(string)
-    file_path_elements = string.split("/")
+    file_path_elements = string.split('/')
     file_path_elements.pop
-    file_path_elements.join("/")
+    file_path_elements.join('/')
   end
 
   def handle_output(message)
     puts message
-    self.output.write("#{message}\n")
+    output.write("#{message}\n")
   end
 
   class << self
