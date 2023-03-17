@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.executables   = ['monopoke']
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'activesupport', '~> 6.0.2.1'
+  spec.add_dependency 'activesupport', '>= 6.0.2.1', '< 7.0.5.0'
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'pry', '~> 0.13.1'
   spec.add_development_dependency 'pry-byebug', '~> 3.9.0'
